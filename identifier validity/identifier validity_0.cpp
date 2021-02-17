@@ -34,7 +34,8 @@ bool isValidIdentifier(string s, map<string, bool> &keys){	//if keywords are pro
 			}
 		}
 		return true;
-	}else return false;
+	}
+	return false;
 }
 
 /*
@@ -52,7 +53,8 @@ bool isValidIdentifier(string s){
 			}
 		}
 		return true;
-	}else return false;
+	}
+	return false;
 }
 
 //driver code
@@ -95,12 +97,19 @@ int main(){
 	keys.insert({"void",true});
 	keys.insert({"volatile",true});
 	keys.insert({"while",true});
+	
+	/*
+	t is the test cases. it desribes how many token you want to check
+	*/
 	int t;
 	cin>>t;		
 	cin.ignore();
 	while(t--)
 	{
 		string s;
+		/*
+		s is the token to be checked for identifier
+		*/
 		getline(cin, s);
 		if(isValidIdentifier(s, keys)){
 			cout<<"accepted"<<endl;
