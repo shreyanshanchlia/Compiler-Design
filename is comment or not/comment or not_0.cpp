@@ -16,6 +16,7 @@ void RemoveComments(string _s)
         None,
         slash,
         SingleLine,
+        MultiLineEnd,
         MultiLine
     };
     CommentType Current = CommentType::None;
@@ -23,7 +24,7 @@ void RemoveComments(string _s)
     //loop through the file/string.
     for (auto ch = _s.begin(); ch != _s.end(); ch++)
     {
-        if(Current != CommentType::SingleLine && Current != CommentType::MultiLine)
+        if(Current != CommentType::SingleLine && Current != CommentType::MultiLine && Current != CommentType::MultiLineEnd)
         {
             //if not in a comment, and encounter a '/', change Current to slash as it could be a new comment
             if(*ch == '/')
@@ -65,20 +66,24 @@ void RemoveComments(string _s)
             }
             comment += *ch;
         }
-        else // if (Current == CommentType::MultiLine)
+        //if in multi line end, '/' can break the comment
+        else if (Current == CommentType::MultiLineEnd)
+        {
+            if(*ch == '/')
+            {
+                Current = CommentType::None;
+                comment.pop_back();
+            }
+            else
+                comment += *ch;
+        }
+        else //if (Current == CommentType::MultiLine)
         {
             //encountered * could be the end of multi-line comment if / follows
             if(*ch == '*')
             {
                 comment += *ch;
-                
-                ch++;
-
-                if(*ch == '/')
-                {
-                    Current = CommentType::None;
-                    comment.pop_back();
-                }
+                Current = CommentType::MultiLineEnd;
             }
             else
                 comment += *ch;
@@ -92,7 +97,7 @@ void RemoveComments(string _s)
 int main()
 {
     //s can be initialised/replaced with file.
-    string s = "// Declare an array \n int v[3] = {10, 100, 200};/* declared*/ \n// Declare pointer variable \n int *ptr; int x = a / b;";
+    string s = "// Declare an array \n int v[3] = {10, 100, 200};/* declared **/ \n// Declare pointer variable \n int *ptr; int x = a / b;";
 
     RemoveComments(s);
 
